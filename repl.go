@@ -10,7 +10,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(cfg *config) error
 }
 
 func getSupportedCommands() map[string]cliCommand {
@@ -26,11 +26,21 @@ func getSupportedCommands() map[string]cliCommand {
 			description: "Displays the help message",
 			callback:    commandHelp,
 		},
+		"map": {
+			name: "map",
+			description: "Map Location area",
+			callback: map_area,
+		},
+		"mapb": {
+			name: "mapb",
+			description: "Map back location area",
+			callback: map_back_area,
+		},
 	}
 	return supportedCommands
 }
 
-func startRepl() {
+func startRepl(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	supportedCommands := getSupportedCommands()
 	for {
@@ -52,7 +62,7 @@ func startRepl() {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := cliCommand.callback()
+		err := cliCommand.callback(cfg)
 		if err != nil {
 			os.Exit(1)
 		}
