@@ -1,14 +1,38 @@
 package main
 
 import (
-	"fmt"
 	"bufio"
-	"strings"
+	"fmt"
 	"os"
+	"strings"
 )
+
+type cliCommand struct {
+	name        string
+	description string
+	callback    func() error
+}
+
+func getSupportedCommands() map[string]cliCommand {
+
+	var supportedCommands map[string]cliCommand = map[string]cliCommand{
+		"exit": {
+			name:        "exit",
+			description: "Exit the Pokedex",
+			callback:    commandExit,
+		},
+		"help": {
+			name:        "help",
+			description: "Displays the help message",
+			callback:    commandHelp,
+		},
+	}
+	return supportedCommands
+}
 
 func startRepl() {
 	scanner := bufio.NewScanner(os.Stdin)
+	supportedCommands := getSupportedCommands()
 	for {
 		fmt.Print("Pokedex > ")
 		moreTokens := scanner.Scan()
@@ -20,7 +44,18 @@ func startRepl() {
 		if len(cleanedWords) == 0 {
 			continue
 		}
-		fmt.Printf("Your command was: %s\n", cleanedWords[0])
+		commandName := cleanedWords[0]
+
+		cliCommand, ok := supportedCommands[commandName]
+
+		if !ok {
+			fmt.Println("Unknown command")
+			continue
+		}
+		err := cliCommand.callback()
+		if err != nil {
+			os.Exit(1)
+		}
 	}
 }
 func cleanInput(text string) []string {
