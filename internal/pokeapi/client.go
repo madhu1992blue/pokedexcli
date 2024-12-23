@@ -1,15 +1,15 @@
 package pokeapi
 
-
 import (
+	"github.com/madhu1992blue/pokedexcli/internal/pokecache"
 	"net/http"
 	"time"
-	"github.com/madhu1992blue/pokedexcli/internal/pokecache"
 )
+
 type Client struct {
-	baseURL string
+	baseURL    string
 	httpClient *http.Client
-	cache *pokecache.Cache
+	cache      *pokecache.Cache
 }
 
 func NewClient(url string, timeout, interval time.Duration) *Client {

@@ -10,7 +10,7 @@ import (
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(cfg *config) error
+	callback    func(cfg *config, args ...string) error
 }
 
 func getSupportedCommands() map[string]cliCommand {
@@ -27,14 +27,19 @@ func getSupportedCommands() map[string]cliCommand {
 			callback:    commandHelp,
 		},
 		"map": {
-			name: "map",
+			name:        "map",
 			description: "Map Location area",
-			callback: map_area,
+			callback:    map_area,
 		},
 		"mapb": {
-			name: "mapb",
+			name:        "mapb",
 			description: "Map back location area",
-			callback: map_back_area,
+			callback:    map_back_area,
+		},
+		"explore": {
+			name: "explore",
+			description: "Explore with: explore <area_name>",
+			callback: explore_area,
 		},
 	}
 	return supportedCommands
@@ -62,7 +67,7 @@ func startRepl(cfg *config) {
 			fmt.Println("Unknown command")
 			continue
 		}
-		err := cliCommand.callback(cfg)
+		err := cliCommand.callback(cfg, cleanedWords[1:]...)
 		if err != nil {
 			os.Exit(1)
 		}

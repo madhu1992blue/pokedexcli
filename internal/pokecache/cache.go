@@ -1,36 +1,38 @@
 package pokecache
 
 import (
-	"time"
 	"sync"
+	"time"
 )
+
 type cacheEntry struct {
 	createdAt time.Time
-	val []byte
+	val       []byte
 }
 type Cache struct {
-	mu *sync.Mutex
-	data map[string]cacheEntry
-	done chan struct{}
+	mu       *sync.Mutex
+	data     map[string]cacheEntry
+	done     chan struct{}
 	interval time.Duration
 }
+
 func NewCache(interval time.Duration) *Cache {
 	ticker := time.NewTicker(interval)
 	done := make(chan struct{})
-	c :=&Cache {
-		data: map[string]cacheEntry{},
-		mu: &sync.Mutex{},
-		done: done,
+	c := &Cache{
+		data:     map[string]cacheEntry{},
+		mu:       &sync.Mutex{},
+		done:     done,
 		interval: interval,
 	}
 
 	go func() {
 		for {
 			select {
-				case <-done:
-					return
-				case <-ticker.C:
-					c.cleanup()			
+			case <-done:
+				return
+			case <-ticker.C:
+				c.cleanup()
 			}
 		}
 	}()
@@ -43,11 +45,11 @@ func (c *Cache) cleanup() {
 	defer c.mu.Unlock()
 	keysToPurge := []string{}
 	for k, cacheEntry := range c.data {
-		if cacheEntry.createdAt.Before(time.Now().Add(-1 *c.interval)) {
+		if cacheEntry.createdAt.Before(time.Now().Add(-1 * c.interval)) {
 			keysToPurge = append(keysToPurge, k)
 		}
 	}
-	for _, k:= range keysToPurge {
+	for _, k := range keysToPurge {
 		delete(c.data, k)
 	}
 }
@@ -56,7 +58,7 @@ func (c *Cache) Add(key string, val []byte) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.data[key] = cacheEntry{
-		val: val,
+		val:       val,
 		createdAt: time.Now(),
 	}
 }
@@ -70,6 +72,3 @@ func (c *Cache) Get(key string) ([]byte, bool) {
 	}
 	return res.val, true
 }
-
-
-

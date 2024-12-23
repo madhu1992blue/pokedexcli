@@ -4,8 +4,7 @@ import (
 	"fmt"
 )
 
-
-func map_area(cfg *config) error {
+func map_area(cfg *config, args ...string) error {
 	locationAreas, err := cfg.pokeclient.GetLocationAreas(cfg.NextLocationAreaURL)
 	if err != nil {
 		return err
@@ -22,13 +21,13 @@ func map_area(cfg *config) error {
 	return nil
 }
 
-func map_back_area(cfg *config) error {
+func map_back_area(cfg *config, args ...string) error {
 	if cfg.PreviousLocationAreaURL == nil {
 		fmt.Println("you're on the first page")
 	}
 	locationAreas, err := cfg.pokeclient.GetLocationAreas(cfg.PreviousLocationAreaURL)
-	cfg.NextLocationAreaURL=locationAreas.Next
-	cfg.PreviousLocationAreaURL=locationAreas.Previous
+	cfg.NextLocationAreaURL = locationAreas.Next
+	cfg.PreviousLocationAreaURL = locationAreas.Previous
 	if err != nil {
 		return err
 	}
