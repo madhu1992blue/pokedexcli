@@ -7,6 +7,9 @@ import (
 
 func map_area(cfg *config) error {
 	locationAreas, err := cfg.pokeclient.GetLocationAreas(cfg.NextLocationAreaURL)
+	if err != nil {
+		return err
+	}
 	cfg.NextLocationAreaURL = locationAreas.Next
 	cfg.PreviousLocationAreaURL = locationAreas.Previous
 	if err != nil {
