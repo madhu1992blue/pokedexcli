@@ -9,7 +9,7 @@ type config struct {
 func main() {
 
 	cfg := &config{
-		pokeclient: pokeapi.NewClient("https://pokeapi.co/api/v2", 7 * time.Second),
+		pokeclient: pokeapi.NewClient("https://pokeapi.co/api/v2", 5 * time.Second, 5* time.Minute ),
 	}
 	startRepl(cfg)
 }
