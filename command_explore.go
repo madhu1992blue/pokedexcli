@@ -10,7 +10,7 @@ func explore_area(cfg *config, args ...string) error {
 		return errors.New("name required as argument for exploring an area")
 	}
 	areaName := args[0]
-	locationAreasExplored, err := cfg.pokeclient.ExploreLocationArea(nil, areaName)
+	locationAreasExplored, err := cfg.Pokeclient.ExploreLocationArea(nil, areaName)
 	if err != nil {
 		return err
 	}
